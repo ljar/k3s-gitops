@@ -67,14 +67,13 @@ spec:
         - name: gateway
           image: lucasrosedotnet.azurecr.io/hermes-agent:latest
           imagePullPolicy: Always
-          #command: ["/opt/hermes/.venv/bin/hermes"]
-          #args: ["gateway", "run"]
           securityContext:
             runAsUser: 10000
             runAsGroup: 10000
-          #command: ["/opt/hermes/.venv/bin/hermes"]
-          command:  ["sleep"]
-          args: ["infinity"]
+          #command:  ["sleep"]
+          #args: ["infinity"]
+          command: ["/opt/hermes/.venv/bin/hermes"]
+          args: ["gateway", "run"]
           
 
           env:
