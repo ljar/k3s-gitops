@@ -65,6 +65,7 @@ spec:
         - name: gateway
           image: lucasrosedotnet.azurecr.io/hermes-agent:latest
           imagePullPolicy: Always
+          command: ["/opt/hermes/.venv/bin/hermes"]
           args: ["gateway", "run"]
 
           env:
@@ -141,6 +142,7 @@ spec:
         - name: dashboard
           image: lucasrosedotnet.azurecr.io/hermes-agent:latest
           imagePullPolicy: Always
+          command: ["/opt/hermes/.venv/bin/hermes"]
           args: ["dashboard", "--host", "0.0.0.0", "--no-open"]
 
           env:
