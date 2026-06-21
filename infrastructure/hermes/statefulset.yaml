@@ -85,7 +85,11 @@ spec:
                   name: hermes-secrets
                   key: NOUS_API_KEY
             # Or swap for ANTHROPIC_API_KEY / OPENAI_API_KEY etc.
-
+            - name: OPENROUTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-secrets
+                  key: OPENROUTER_API_KEY
             # ── Messaging gateway ─────────────────────────────────────────
             - name: TELEGRAM_BOT_TOKEN
               valueFrom:
