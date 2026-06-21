@@ -1,0 +1,22 @@
+---
+# ClusterIP Service for the Hermes dashboard (port 9119).
+# Access from Windows Terminal via:
+#   kubectl port-forward -n hermes svc/hermes-dashboard 9119:9119
+# Then open http://localhost:9119 in your browser.
+# Via Tailscale: port-forward still applies unless you expose it via an Ingress.
+apiVersion: v1
+kind: Service
+metadata:
+  name: hermes-dashboard
+  namespace: hermes
+  labels:
+    app.kubernetes.io/name: hermes
+spec:
+  type: ClusterIP
+  selector:
+    app: hermes
+  ports:
+    - name: dashboard
+      port: 9119
+      targetPort: 9119
+      protocol: TCP

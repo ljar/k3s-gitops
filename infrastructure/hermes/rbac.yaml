@@ -1,0 +1,73 @@
+---
+# ServiceAccount Hermes will run as
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hermes
+  namespace: hermes
+  labels:
+    app.kubernetes.io/name: hermes
+
+---
+# ClusterRole — adjust verbs/resources if you want tighter scope.
+# As-is this lets Hermes read cluster state and trigger rollouts,
+# which is what you need for conversational DevOps via Telegram.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hermes-devops
+  labels:
+    app.kubernetes.io/name: hermes
+rules:
+  # Read all common workload resources across all namespaces
+  - apiGroups: ["", "apps", "batch", "networking.k8s.io"]
+    resources:
+      - pods
+      - pods/log
+      - deployments
+      - statefulsets
+      - daemonsets
+      - replicasets
+      - services
+      - endpoints
+      - ingresses
+      - jobs
+      - cronjobs
+      - configmaps
+      - persistentvolumeclaims
+      - nodes
+      - namespaces
+      - events
+    verbs: ["get", "list", "watch"]
+  # Allow rollout restarts and scaling
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+      - statefulsets
+      - daemonsets
+    verbs: ["patch", "update"]
+  # Allow exec into pods (useful for Hermes running ad-hoc checks)
+  - apiGroups: [""]
+    resources:
+      - pods/exec
+    verbs: ["create"]
+  # Flux Kustomizations / HelmReleases — read + reconcile trigger
+  - apiGroups: ["kustomize.toolkit.fluxcd.io", "helm.toolkit.fluxcd.io", "source.toolkit.fluxcd.io"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch", "patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hermes-devops
+  labels:
+    app.kubernetes.io/name: hermes
+subjects:
+  - kind: ServiceAccount
+    name: hermes
+    namespace: hermes
+roleRef:
+  kind: ClusterRole
+  name: hermes-devops
+  apiGroup: rbac.authorization.k8s.io

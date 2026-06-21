@@ -1,0 +1,25 @@
+---
+# Flux Kustomization for Hermes Agent.
+# Place at: clusters/homelab/hermes.yaml
+# Depends on longhorn being healthy first (PVC must be provisionable).
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: hermes
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./infrastructure/hermes
+  prune: true
+  wait: true
+  timeout: 5m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: longhorn        # ensures Longhorn StorageClass is ready before PVC creation
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: StatefulSet
+      name: hermes
+      namespace: hermes

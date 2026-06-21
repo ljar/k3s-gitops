@@ -1,0 +1,43 @@
+# Dockerfile.homelab
+# Extends the Hermes Agent image with Azure DevOps tooling.
+# Build via ACR Tasks — see README for the az acr build command.
+#
+# Base image is built first from NousResearch/hermes-agent#main
+# and pushed to ACR as hermes-agent:base.
+
+FROM lucasrosedotnet.azurecr.io/hermes-agent:base
+
+# ── Azure CLI ──────────────────────────────────────────────────────────────────
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl gnupg lsb-release apt-transport-https ca-certificates && \
+    curl -sLS https://packages.microsoft.com/keys/microsoft.asc \
+        | gpg --dearmor \
+        | tee /etc/apt/keyrings/microsoft.gpg > /dev/null && \
+    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg] \
+        https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
+        | tee /etc/apt/sources.list.d/azure-cli.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends azure-cli && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ── kubectl ────────────────────────────────────────────────────────────────────
+RUN KUBECTL_VERSION=$(curl -Ls https://dl.k8s.io/release/stable.txt) && \
+    curl -Lo /usr/local/bin/kubectl \
+        "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
+    chmod +x /usr/local/bin/kubectl
+
+# ── flux CLI ──────────────────────────────────────────────────────────────────
+RUN curl -s https://fluxcd.io/install.sh | bash
+
+# ── GitHub CLI (for PR/Actions triggers) ──────────────────────────────────────
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        | tee /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+        https://cli.github.com/packages stable main" \
+        | tee /etc/apt/sources.list.d/github-cli.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends gh && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Inherit HERMES_HOME, VOLUME, and ENTRYPOINT from base image
