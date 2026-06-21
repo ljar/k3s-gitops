@@ -65,8 +65,11 @@ spec:
         - name: gateway
           image: lucasrosedotnet.azurecr.io/hermes-agent:latest
           imagePullPolicy: Always
-          command: ["/opt/hermes/.venv/bin/hermes"]
-          args: ["gateway", "run"]
+          #command: ["/opt/hermes/.venv/bin/hermes"]
+          #args: ["gateway", "run"]
+          command:  ["sleep"]
+          args: ["infinity"]
+          
 
           env:
             # ── Model provider ────────────────────────────────────────────
@@ -143,7 +146,7 @@ spec:
           image: lucasrosedotnet.azurecr.io/hermes-agent:latest
           imagePullPolicy: Always
           command: ["/opt/hermes/.venv/bin/hermes"]
-          args: ["dashboard", "--host", "0.0.0.0", "--no-open"]
+          args: ["dashboard", "--host", "127.0.0.1", "--no-open","--insecure"]
 
           env:
             - name: HERMES_HOME
