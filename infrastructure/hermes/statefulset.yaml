@@ -26,7 +26,9 @@ spec:
       # ── Pin to node 3 ──────────────────────────────────────────────────────
       nodeSelector:
         homelab/workload: agents   # apply with: kubectl label node <node3> homelab/workload=agents
-
+      securityContext:
+        fsGroup: 10000
+        
       # ── ACR pull secret ────────────────────────────────────────────────────
       imagePullSecrets:
         - name: acr-secret
@@ -67,6 +69,10 @@ spec:
           imagePullPolicy: Always
           #command: ["/opt/hermes/.venv/bin/hermes"]
           #args: ["gateway", "run"]
+          securityContext:
+            runAsUser: 10000
+            runAsGroup: 10000
+          #command: ["/opt/hermes/.venv/bin/hermes"]
           command:  ["sleep"]
           args: ["infinity"]
           
@@ -115,9 +121,9 @@ spec:
             - name: HERMES_HOME
               value: /opt/data
             - name: HERMES_UID
-              value: "0"
+              value: "10000"
             - name: HERMES_GID
-              value: "0"
+              value: "10000"
 
           volumeMounts:
             - name: hermes-data
@@ -152,9 +158,9 @@ spec:
             - name: HERMES_HOME
               value: /opt/data
             - name: HERMES_UID
-              value: "0"
+              value: "10000"
             - name: HERMES_GID
-              value: "0"
+              value: "10000"
 
           ports:
             - name: dashboard
