@@ -39,6 +39,8 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: hermes-keyvault
+            nodePublishSecretRef:
+              name: akv-sp-credentials
 
       # ── init: wait for Secret to exist before starting main containers ─────
       initContainers:
