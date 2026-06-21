@@ -63,7 +63,7 @@ spec:
       containers:
         # ── Gateway (primary) ───────────────────────────────────────────────
         - name: gateway
-          image: lucasrosedotnet.azurecr.io/hermes-homelab:latest
+          image: lucasrosedotnet.azurecr.io/hermes-agent:latest
           imagePullPolicy: Always
           command: ["gateway", "run"]
 
@@ -139,7 +139,7 @@ spec:
 
         # ── Dashboard (sidecar) ─────────────────────────────────────────────
         - name: dashboard
-          image: lucasrosedotnet.azurecr.io/hermes-homelab:latest
+          image: lucasrosedotnet.azurecr.io/hermes-agent:latest
           imagePullPolicy: Always
           command: ["dashboard", "--host", "0.0.0.0", "--no-open"]
 
