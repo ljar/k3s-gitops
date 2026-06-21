@@ -16,8 +16,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  dependsOn:
-    - name: longhorn        # ensures Longhorn StorageClass is ready before PVC creation
+#  dependsOn:
+#    - name: longhorn        # ensures Longhorn StorageClass is ready before PVC creation
   healthChecks:
     - apiVersion: apps/v1
       kind: StatefulSet
